@@ -1,6 +1,6 @@
 // src/App.js
 import React from 'react';
-import EventList from './components/EventList';
+import EventTable from './components/EventTable';
 import AddEventForm from './components/AddEventForm';
 import DeleteEventForm from './components/DeleteEventForm';
 
@@ -9,8 +9,8 @@ function App() {
         <div className="App">
             <h1>when2boulder</h1>
             <AddEventForm />
-            <DeleteEventForm />
-            <EventList />
+            {/* <DeleteEventForm /> */}
+            <EventTable/>
         </div>
     );
 }
