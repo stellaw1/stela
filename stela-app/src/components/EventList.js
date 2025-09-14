@@ -19,9 +19,9 @@ const EventList = () => {
             <ul>
                 {events.map((event, index) => (
                     <li key={index}>
-                        <strong>{event.title}</strong>
-                        <p>{event.description}</p>
-                        <small>{event.date}</small>
+                        <strong>{event.initial}</strong>
+                        <p>{event.gym}</p>
+                        <small>{event.day}</small>
                     </li>
                 ))}
             </ul>
