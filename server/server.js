@@ -3,14 +3,24 @@ const redis = require('redis');
 const cors = require('cors');
 
 const app = express();
-const port = 5000;
+const port = 5001;
+
+// CORS should be applied before any routes are defined
+app.use(cors({
+    origin: ['http://localhost:3000'], // React app origin
+    methods: ['GET', 'POST'],       // Allowed methods
+    allowedHeaders: ['Content-Type'],
+}));
 
 // Connect to Redis
 const client = redis.createClient({ url: 'redis://localhost:6379' });
 client.connect();
 
-app.use(cors());
 app.use(express.json());
+
+app.get('/test', (req, res) => {
+    res.send('CORS is working!');
+});
 
 // API to get all events
 app.get('/api/events', async (req, res) => {
@@ -38,4 +48,3 @@ app.post('/api/events', async (req, res) => {
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
-
