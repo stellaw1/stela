@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { addEvent } from '../services/api';
 
-const AddEventForm = () => {
+const AddEventForm = ({ onEventAdded }) => {
     const [initial, setInitial] = useState('');
     const [gym, setGym] = useState('');
     const [day, setDay] = useState('');
@@ -14,6 +14,11 @@ const AddEventForm = () => {
         setInitial('');
         setGym('');
         setDay('');
+        
+        // Trigger refresh of EventTable
+        if (onEventAdded) {
+            onEventAdded();
+        }
     };
 
     return (
@@ -50,4 +55,3 @@ const AddEventForm = () => {
 };
 
 export default AddEventForm;
-

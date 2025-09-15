@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { getEvents } from '../services/api';
 
-const EventTable = () => {
+const EventTable = ({ refreshTrigger }) => {
     const [events, setEvents] = useState([]);
 
     useEffect(() => {
@@ -11,7 +11,7 @@ const EventTable = () => {
             setEvents(eventsData);
         };
         fetchEvents();
-    }, []);
+    }, [refreshTrigger]);
 
     const daysOfWeek = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
     
@@ -69,4 +69,3 @@ const EventTable = () => {
 };
 
 export default EventTable;
-
