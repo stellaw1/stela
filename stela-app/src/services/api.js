@@ -16,9 +16,19 @@ export const getEvents = async () => {
 export const addEvent = async (event) => {
     try {
         const response = await axios.post(API_URL, event);
+        console.log(response)
         return response.data;
     } catch (error) {
         console.error('Error adding event:', error);
     }
 };
 
+export const deleteEvent = async (event) => {
+    try {
+        const response = await axios.delete(API_URL, { data: event });
+        console.log(response)
+        return response.data;
+    } catch (error) {
+        console.error('Error adding event:', error);
+    }
+};
