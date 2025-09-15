@@ -13,7 +13,7 @@ const EventTable = ({ refreshTrigger }) => {
         fetchEvents();
     }, [refreshTrigger]);
 
-    const daysOfWeek = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+    const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
     
     // Step 1: Safely collect all events
     const allEvents = daysOfWeek.flatMap(day => (events?.[day] || []));

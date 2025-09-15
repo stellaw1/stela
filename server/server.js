@@ -23,7 +23,7 @@ app.get('/test', (req, res) => {
 
 // API to reset all events
 app.post('/api/events/reset', async (req, res) => {
-    const defaultVal = {"monday":[], "tuesday": [], "wednesday": [], "thursday": [], "friday": [], "saturday": [], "sunday": []};
+    const defaultVal = {"Monday":[], "Tuesday": [], "Wednesday": [], "Thursday": [], "Friday": [], "Saturday": [], "Sunday": []};
 
     try {
         const events = await client.json.set('events', '$', defaultVal);

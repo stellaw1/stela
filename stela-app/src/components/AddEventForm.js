@@ -2,6 +2,11 @@
 import React, { useState } from 'react';
 import { addEvent } from '../services/api';
 
+const daysOfWeek = [
+    'Monday', 'Tuesday', 'Wednesday',
+    'Thursday', 'Friday', 'Saturday', 'Sunday'
+];
+
 const AddEventForm = ({ onEventAdded }) => {
     const [initial, setInitial] = useState('');
     const [gym, setGym] = useState('');
@@ -9,13 +14,19 @@ const AddEventForm = ({ onEventAdded }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const newEvent = { initial, gym, day };
+
+        const newEvent = {
+            initial,
+            gym,
+            day: day
+        };
+
         await addEvent(newEvent);
+
         setInitial('');
         setGym('');
         setDay('');
-        
-        // Trigger refresh of EventTable
+
         if (onEventAdded) {
             onEventAdded();
         }
@@ -24,6 +35,7 @@ const AddEventForm = ({ onEventAdded }) => {
     return (
         <form onSubmit={handleSubmit}>
             <h2>Add a New Event</h2>
+            
             <div>
                 <label>Initial</label>
                 <input
@@ -33,22 +45,33 @@ const AddEventForm = ({ onEventAdded }) => {
                     required
                 />
             </div>
+
             <div>
                 <label>Gym</label>
                 <input
+                    type="text"
                     value={gym}
                     onChange={(e) => setGym(e.target.value)}
                     required
                 />
             </div>
+
             <div>
                 <label>Day</label>
-                <input
+                <select
                     value={day}
                     onChange={(e) => setDay(e.target.value)}
                     required
-                />
+                >
+                    <option value="" disabled>Select a day</option>
+                    {daysOfWeek.map(d => (
+                        <option key={d} value={d}>
+                            {d}
+                        </option>
+                    ))}
+                </select>
             </div>
+
             <button type="submit">Add Event</button>
         </form>
     );
