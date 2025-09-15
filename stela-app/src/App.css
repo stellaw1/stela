@@ -1,38 +1,144 @@
-.App {
+/* src/App.css */
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f7fc;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+.app-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.app-header {
   text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 0.2rem;
+  padding: 20px 0;
+  margin-bottom: 30px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #333;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Card / panel style wrapping forms and tables */
+.panel {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 30px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* AddEventForm styles */
+.add-event-form {
+  width: 100%;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.add-event-form h2 {
+  margin-bottom: 16px;
+  color: #222;
+}
+
+.add-event-form label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.add-event-form input[type="text"],
+.add-event-form select {
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.add-event-form input[type="text"]:focus,
+.add-event-form select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.add-event-form button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 1rem;
   color: white;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
-.App-link {
-  color: #61dafb;
+.add-event-form button:hover {
+  background-color: #0056b3;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+/* Table / EventTable styles */
+.event-table-container {
+  overflow-x: auto;
+}
+
+.event-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.event-table th,
+.event-table td {
+  padding: 12px 10px;
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+}
+
+.event-table thead th {
+  background-color: #004b8d;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.event-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.event-table tbody tr:hover {
+  background-color: #eef7ff;
+}
+
+.gym-cell {
+  text-align: left;
+  font-weight: bold;
+  padding-left: 15px;
+}
+
+/* For color-scale cells (if you keep inline styles based on count) */
+.cell-color-scale {
+  transition: background-color 0.3s ease;
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .event-table th, .event-table td {
+    padding: 8px 6px;
+    font-size: 0.85rem;
   }
-  to {
-    transform: rotate(360deg);
+  .add-event-form input[type="text"],
+  .add-event-form select {
+    font-size: 0.9rem;
+  }
+  .add-event-form button {
+    width: 100%;
   }
 }

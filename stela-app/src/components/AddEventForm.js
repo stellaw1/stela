@@ -33,9 +33,7 @@ const AddEventForm = ({ onEventAdded }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>Add a New Event</h2>
-            
+        <form onSubmit={handleSubmit} className="add-event-form">
             <div>
                 <label>Initial</label>
                 <input

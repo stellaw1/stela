@@ -1,4 +1,6 @@
 // src/App.js
+import './App.css';
+
 import React, { useState } from 'react';
 import EventTable from './components/EventTable';
 import AddEventForm from './components/AddEventForm';
@@ -12,11 +14,16 @@ function App() {
     };
 
     return (
-        <div className="App">
-            <h1>when2boulder</h1>
-            <AddEventForm onEventAdded={handleEventAdded} />
-            {/* <DeleteEventForm /> */}
-            <EventTable refreshTrigger={refreshTrigger} />
+        <div className="app-container">
+            <header className="app-header">
+                when2boulder
+            </header>
+            <div className="panel">
+                <AddEventForm onEventAdded={handleEventAdded} />
+            </div>
+            <div className="panel">
+                <EventTable refreshTrigger={refreshTrigger} />
+            </div>
         </div>
     );
 }

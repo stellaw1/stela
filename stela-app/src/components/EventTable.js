@@ -39,32 +39,34 @@ const EventTable = ({ refreshTrigger }) => {
     // }
 
     return (
-        <table border="1" cellPadding="8" style={{ borderCollapse: "collapse", textAlign: "center", width: "100%" }}>
-        <thead>
-            <tr>
-            <th>Gym / Day</th>
-            {daysOfWeek.map(day => (
-                <th key={day}>
-                {day.charAt(0).toUpperCase() + day.slice(1)}
-                </th>
-            ))}
-            </tr>
-        </thead>
-        <tbody>
-            {gyms.map(gym => (
-            <tr key={gym}>
-                <td><strong>{gym}</strong></td>
+        <div className="event-table-container">
+            <table border="1" cellPadding="8" style={{ borderCollapse: "collapse", textAlign: "center", width: "100%" }} className="event-table">
+            <thead>
+                <tr>
+                <th>Gym / Day</th>
                 {daysOfWeek.map(day => (
-                <td key={day}>
-                    {schedule[gym][day].length > 0
-                    ? schedule[gym][day].join(", ")
-                    : ""}
-                </td>
+                    <th key={day}>
+                    {day.charAt(0).toUpperCase() + day.slice(1)}
+                    </th>
                 ))}
-            </tr>
-            ))}
-        </tbody>
-        </table>
+                </tr>
+            </thead>
+            <tbody>
+                {gyms.map(gym => (
+                <tr key={gym}>
+                    <td><strong>{gym}</strong></td>
+                    {daysOfWeek.map(day => (
+                    <td key={day}>
+                        {schedule[gym][day].length > 0
+                        ? schedule[gym][day].join(", ")
+                        : ""}
+                    </td>
+                    ))}
+                </tr>
+                ))}
+            </tbody>
+            </table>
+        </div>
     );
 };
 
