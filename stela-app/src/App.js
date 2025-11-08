@@ -3,8 +3,7 @@ import './App.css';
 
 import React, { useState } from 'react';
 import EventTable from './components/EventTable';
-import AddEventForm from './components/AddEventForm';
-import DeleteEventForm from './components/DeleteEventForm';
+import EventForm from './components/EventForm';
 
 function App() {
     const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -19,10 +18,10 @@ function App() {
                 when2boulder
             </header>
             <div className="panel">
-                <AddEventForm onEventAdded={handleEventAdded} />
+                <EventTable refreshTrigger={refreshTrigger} />
             </div>
             <div className="panel">
-                <EventTable refreshTrigger={refreshTrigger} />
+                <EventForm onEventAdded={handleEventAdded} />
             </div>
         </div>
     );

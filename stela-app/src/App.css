@@ -1,11 +1,23 @@
 /* src/App.css */
 
+/* Colour variables */
+:root {
+  --color-correct: #6aaa64;
+  --color-present: #c9b458;
+  --color-absent: #787c7e;
+  --color-light-grey: #d3d6da;
+  --color-dark-grey: #878a8c;
+  --color-background: #ffffff;
+  --color-text: #1a1a1b;
+  --color-panel-background: #f6f7f8;
+}
+
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f4f7fc;
-  color: #333;
   margin: 0;
   padding: 0;
+  font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--color-panel-background);
+  color: var(--color-text);
 }
 
 .app-container {
@@ -16,38 +28,37 @@ body {
 
 .app-header {
   text-align: center;
-  font-size: 2.5rem;
+  font-size: 3rem;
   font-weight: 700;
   letter-spacing: 0.2rem;
   padding: 20px 0;
+  color: var(--color-text);
+  user-select: none;
   margin-bottom: 30px;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  color: #333;
 }
 
-/* Card / panel style wrapping forms and tables */
 .panel {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--color-background);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 20px;
   margin-bottom: 30px;
 }
 
-/* AddEventForm styles */
 .add-event-form {
   width: 100%;
 }
 
 .add-event-form h2 {
   margin-bottom: 16px;
-  color: #222;
+  color: var(--color-text);
 }
 
 .add-event-form label {
   display: block;
   margin-bottom: 6px;
   font-weight: 600;
+  color: var(--color-text);
 }
 
 .add-event-form input[type="text"],
@@ -55,36 +66,56 @@ body {
   width: 100%;
   padding: 8px 12px;
   margin-bottom: 16px;
-  border: 1px solid #ccc;
+  border: 2px solid var(--color-light-grey);
   border-radius: 4px;
   font-size: 1rem;
-  box-sizing: border-box;
   transition: border-color 0.2s;
+  box-sizing: border-box;
 }
 
 .add-event-form input[type="text"]:focus,
 .add-event-form select:focus {
-  border-color: #007bff;
+  border-color: var(--color-dark-grey);
   outline: none;
 }
 
 .add-event-form button {
-  display: inline-block;
   padding: 10px 20px;
   font-size: 1rem;
-  color: white;
-  background-color: #007bff;
+  color: #fff;
+  background-color: var(--color-correct);
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background-color 0.2s;
 }
 
 .add-event-form button:hover {
-  background-color: #0056b3;
+  background-color: #558f4e; /* slightly darker green */
 }
 
-/* Table / EventTable styles */
+/* Layout buttons side by side */
+.add-event-form .button-row {
+  display: flex;
+  justify-content: space-between; /* or center, if you prefer */
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Make both buttons take equal width (optional but tidy) */
+.add-event-form .button-row button {
+  flex: 1;
+}
+
+/* Optional: distinct red style for Delete button */
+.add-event-form .delete-btn {
+  background-color: var(--color-wrong, #d9534f);
+}
+
+.add-event-form .delete-btn:hover {
+  background-color: #c0392b;
+}
+
 .event-table-container {
   overflow-x: auto;
 }
@@ -95,42 +126,48 @@ body {
   margin-top: 20px;
 }
 
-.event-table th,
-.event-table td {
-  padding: 12px 10px;
-  border: 1px solid #ddd;
-  font-size: 0.95rem;
+.event-table thead th {
+  color: var(--color-text);
+  padding: 12px;
+  border-bottom: 2px solid var(--color-light-grey);
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  background-color: var(--color-background);
 }
 
-.event-table thead th {
-  background-color: #004b8d;
-  color: #fff;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.event-table th,
+.event-table td {
+  padding: 10px;
+  border: 1px solid var(--color-light-grey);
+  font-size: 0.95rem;
+  transition: background-color 0.3s ease;
+  color: var(--color-text);
 }
 
 .event-table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: var(--color-panel-background);
 }
 
 .event-table tbody tr:hover {
-  background-color: #eef7ff;
+  background-color: #e9f5ee; /* gentle hover, pale green */
 }
 
 .gym-cell {
-  text-align: left;
   font-weight: bold;
+  text-align: left;
   padding-left: 15px;
+  color: var(--color-text);
 }
 
-/* For color-scale cells (if you keep inline styles based on count) */
 .cell-color-scale {
   transition: background-color 0.3s ease;
+  color: var(--color-text);
 }
 
-/* Responsive tweaks */
+/* Responsive */
 @media (max-width: 600px) {
-  .event-table th, .event-table td {
+  .event-table th,
+  .event-table td {
     padding: 8px 6px;
     font-size: 0.85rem;
   }
