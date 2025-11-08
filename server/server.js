@@ -27,7 +27,6 @@ app.post('/api/events/reset', async (req, res) => {
 
     try {
         const events = await client.json.set('events', '$', defaultVal);
-        console.log(events)
         res.json(events);
     } catch (error) {
         console.log(error)
@@ -39,7 +38,6 @@ app.post('/api/events/reset', async (req, res) => {
 app.get('/api/events', async (req, res) => {
     try {
         const events = await client.json.get('events', '$');
-        console.log(events)
         res.json(events);
     } catch (error) {
         console.log(error)
@@ -63,14 +61,13 @@ app.post('/api/events', async (req, res) => {
 // API to delete an event
 app.delete('/api/events', async (req, res) => {
     const { initial, gym, day } = req.body;
-    const event = { initial, gym };
-    const path = '$.' + day + '[?(@.initial == "' + initial + '")]'
-    console.log(path)
 
     try {
-        const deletedCount = await client.json.del('events', path);
-        console.log(deletedCount);
-        res.status(201).json(event);
+        const events = await client.json.get('events', '$');
+        events[day] = events[day].filter(event => !(event.initial === initial && event.gym === gym))
+        await client.json.set('events', '$', events);
+
+        res.status(201).json(events);
     } catch (error) {
         res.status(500).json({ error: 'Failed to delete event' });
     }
