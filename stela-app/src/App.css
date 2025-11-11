@@ -1,38 +1,181 @@
-.App {
+/* src/App.css */
+
+/* Colour variables */
+:root {
+  --color-correct: #6aaa64;
+  --color-present: #c9b458;
+  --color-absent: #787c7e;
+  --color-light-grey: #d3d6da;
+  --color-dark-grey: #878a8c;
+  --color-background: #ffffff;
+  --color-text: #1a1a1b;
+  --color-panel-background: #f6f7f8;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--color-panel-background);
+  color: var(--color-text);
+}
+
+.app-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.app-header {
   text-align: center;
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: 0.2rem;
+  padding: 20px 0;
+  color: var(--color-text);
+  user-select: none;
+  margin-bottom: 30px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.panel {
+  background: var(--color-background);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 30px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.add-event-form {
+  width: 100%;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.add-event-form h2 {
+  margin-bottom: 16px;
+  color: var(--color-text);
+}
+
+.add-event-form label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.add-event-form input[type="text"],
+.add-event-form select {
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  border: 2px solid var(--color-light-grey);
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.add-event-form input[type="text"]:focus,
+.add-event-form select:focus {
+  border-color: var(--color-dark-grey);
+  outline: none;
+}
+
+.add-event-form button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: var(--color-correct);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-event-form button:hover {
+  background-color: #558f4e; /* slightly darker green */
+}
+
+/* Layout buttons side by side */
+.add-event-form .button-row {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: space-between; /* or center, if you prefer */
+  gap: 10px;
+  margin-top: 10px;
 }
 
-.App-link {
-  color: #61dafb;
+/* Make both buttons take equal width (optional but tidy) */
+.add-event-form .button-row button {
+  flex: 1;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+/* Optional: distinct red style for Delete button */
+.add-event-form .delete-btn {
+  background-color: var(--color-wrong, #d9534f);
+}
+
+.add-event-form .delete-btn:hover {
+  background-color: #c0392b;
+}
+
+.event-table-container {
+  overflow-x: auto;
+}
+
+.event-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.event-table thead th {
+  color: var(--color-text);
+  padding: 12px;
+  border-bottom: 2px solid var(--color-light-grey);
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  background-color: var(--color-background);
+}
+
+.event-table th,
+.event-table td {
+  padding: 10px;
+  border: 1px solid var(--color-light-grey);
+  font-size: 0.95rem;
+  transition: background-color 0.3s ease;
+  color: var(--color-text);
+}
+
+.event-table tbody tr:nth-child(even) {
+  background-color: var(--color-panel-background);
+}
+
+.event-table tbody tr:hover {
+  background-color: #e9f5ee; /* gentle hover, pale green */
+}
+
+.gym-cell {
+  font-weight: bold;
+  text-align: left;
+  padding-left: 15px;
+  color: var(--color-text);
+}
+
+.cell-color-scale {
+  transition: background-color 0.3s ease;
+  color: var(--color-text);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .event-table th,
+  .event-table td {
+    padding: 8px 6px;
+    font-size: 0.85rem;
   }
-  to {
-    transform: rotate(360deg);
+  .add-event-form input[type="text"],
+  .add-event-form select {
+    font-size: 0.9rem;
+  }
+  .add-event-form button {
+    width: 100%;
   }
 }

@@ -1,18 +1,18 @@
-// src/components/AddEventForm.js
+// src/components/EventForm.js
 import React, { useState } from 'react';
-import { addEvent } from '../services/api';
+import { addEvent, deleteEvent } from '../services/api';
 
 const daysOfWeek = [
     'Monday', 'Tuesday', 'Wednesday',
     'Thursday', 'Friday', 'Saturday', 'Sunday'
 ];
 
-const AddEventForm = ({ onEventAdded }) => {
+const EventForm = ({ onEventAdded }) => {
     const [initial, setInitial] = useState('');
     const [gym, setGym] = useState('');
     const [day, setDay] = useState('');
 
-    const handleSubmit = async (e) => {
+    const handleAdd = async (e) => {
         e.preventDefault();
 
         const newEvent = {
@@ -32,10 +32,28 @@ const AddEventForm = ({ onEventAdded }) => {
         }
     };
 
+    const handleDelete = async (e) => {
+        e.preventDefault();
+
+        const newEvent = {
+            initial,
+            gym,
+            day: day
+        };
+
+        await deleteEvent(newEvent);
+
+        setInitial('');
+        setGym('');
+        setDay('');
+
+        if (onEventAdded) {
+            onEventAdded();
+        }
+    };
+
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>Add a New Event</h2>
-            
+        <form onSubmit={handleAdd} className="add-event-form">
             <div>
                 <label>Initial</label>
                 <input
@@ -72,9 +90,12 @@ const AddEventForm = ({ onEventAdded }) => {
                 </select>
             </div>
 
-            <button type="submit">Add Event</button>
+            <div className="button-row">
+                <button type="submit">Add Event</button>
+                <button type="button" className="delete-btn" onClick={handleDelete}>Delete Event</button>
+            </div>
         </form>
     );
 };
 
-export default AddEventForm;
+export default EventForm;
