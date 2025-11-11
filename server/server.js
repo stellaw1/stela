@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const redis = require('redis');
 const cors = require('cors');
@@ -12,7 +13,20 @@ app.use(cors({
 }));
 
 // Connect to Redis
-const client = redis.createClient({ url: 'redis://localhost:6379' });
+// const client = redis.createClient({ url: 'redis://localhost:6379' });
+const dbHost = process.env.REDIS_DB_HOST;
+const dbPass = process.env.REDIS_DB_PASS;
+const client = redis.createClient({
+    username: 'default',
+    password: dbPass,
+    socket: {
+        host: dbHost,
+        port: 11692
+    }
+});
+
+client.on('error', err => console.log('Redis Client Error', err));
+
 client.connect();
 
 app.use(express.json());
