@@ -31,6 +31,10 @@ client.connect();
 
 app.use(express.json());
 
+app.get('/ping', (req, res) => {
+    res.send('pong'); // Send a simple response like "pong"
+});
+
 app.get('/test', (req, res) => {
     res.send('CORS is working!');
 });
@@ -87,6 +91,6 @@ app.delete('/api/events', async (req, res) => {
     }
 });
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
