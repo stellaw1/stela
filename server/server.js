@@ -5,10 +5,14 @@ const cors = require('cors');
 
 const app = express();
 const port = 5001;
+const allowedOrigins = [
+  'http://localhost:3000',       // local dev frontend
+  'https://stela-nine.vercel.app',    // deployed frontend
+];
 
 // CORS should be applied before any routes are defined
 app.use(cors({
-    origin: ['http://localhost:3000'], // React app origin
+    origin: allowedOrigins, // React app origin
     methods: ['GET', 'POST', 'DELETE'],       // Allowed methods
 }));
 
@@ -92,5 +96,5 @@ app.delete('/api/events', async (req, res) => {
 });
 
 app.listen(port, '0.0.0.0', () => {
-    console.log(`Server is running on http://localhost:${port}`);
+    console.log(`Server is running on ${port}`);
 });
