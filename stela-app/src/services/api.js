@@ -1,7 +1,7 @@
 // src/services/api.js
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5001/api/events';
+const API_URL = 'http://44.244.71.49:5001/api/events';
 
 export const getEvents = async () => {
     try {

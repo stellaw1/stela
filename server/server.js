@@ -5,10 +5,14 @@ const cors = require('cors');
 
 const app = express();
 const port = 5001;
+const allowedOrigins = [
+  'http://localhost:3000',       // local dev frontend
+  'https://stela-nine.vercel.app',    // deployed frontend
+];
 
 // CORS should be applied before any routes are defined
 app.use(cors({
-    origin: ['http://localhost:3000'], // React app origin
+    origin: allowedOrigins, // React app origin
     methods: ['GET', 'POST', 'DELETE'],       // Allowed methods
 }));
 
@@ -30,6 +34,10 @@ client.on('error', err => console.log('Redis Client Error', err));
 client.connect();
 
 app.use(express.json());
+
+app.get('/ping', (req, res) => {
+    res.send('pong'); // Send a simple response like "pong"
+});
 
 app.get('/test', (req, res) => {
     res.send('CORS is working!');
@@ -87,6 +95,6 @@ app.delete('/api/events', async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Server is running on ${port}`);
 });
