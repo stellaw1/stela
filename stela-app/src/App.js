@@ -7,6 +7,7 @@ import EventForm from './components/EventForm';
 
 function App() {
     const [refreshTrigger, setRefreshTrigger] = useState(0);
+    const [gyms, setGyms] = useState([]);
 
     const handleEventAdded = () => {
         setRefreshTrigger(prev => prev + 1);
@@ -18,10 +19,10 @@ function App() {
                 when2boulder
             </header>
             <div className="panel">
-                <EventTable refreshTrigger={refreshTrigger} />
+                <EventTable refreshTrigger={refreshTrigger} onGymsUpdated={setGyms} />
             </div>
             <div className="panel">
-                <EventForm onEventAdded={handleEventAdded} />
+                <EventForm onEventAdded={handleEventAdded} gymsProp={gyms} />
             </div>
         </div>
     );
