@@ -8,23 +8,10 @@ const daysOfWeek = [
     'Thursday', 'Friday', 'Saturday', 'Sunday'
 ];
 
-const EventForm = ({ onEventAdded }) => {
+const EventForm = ({ onEventAdded, gyms }) => {
     const [initial, setInitial] = useState('');
     const [gym, setGym] = useState('');
     const [day, setDay] = useState('');
-    const [gyms, setGyms] = useState([]);
-
-    useEffect(() => {
-        const fetchGyms = async () => {
-            try {
-                const gymsData = await getGyms();
-                setGyms(gymsData || []);
-            } catch (error) {
-                console.error("Failed to fetch gyms:", error);
-            }
-        };
-        fetchGyms();
-    }, []);
 
     const handleAdd = async (e) => {
         e.preventDefault();
