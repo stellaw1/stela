@@ -43,12 +43,43 @@ app.get('/test', (req, res) => {
     res.send('CORS is working!');
 });
 
-app.post('/api/gyms/reset', async (req, res) => {
-    const defaultVal = [];
+// API to reset all events
+app.post('/api/reset', async (req, res) => {
+    const defaultEvents = {"Monday":[], "Tuesday": [], "Wednesday": [], "Thursday": [], "Friday": [], "Saturday": [], "Sunday": []};
+    const defaultGyms = [];
 
     try {
-        const events = await client.json.set('gyms', '$', defaultVal);
+        const events = await client.json.set('events', '$', defaultEvents);
+        const gyms = await client.json.set('gyms', '$', defaultGyms);
+        res.json({
+            "events": events,
+            "gyms": gyms
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'Failed to reset events' });
+    }
+});
+
+app.post('/api/events/reset', async (req, res) => {
+    const defaultEvents = {"Monday":[], "Tuesday": [], "Wednesday": [], "Thursday": [], "Friday": [], "Saturday": [], "Sunday": []};
+
+    try {
+        const events = await client.json.set('events', '$', defaultEvents);
         res.json(events);
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'Failed to reset events' });
+    }
+});
+
+app.post('/api/gyms/reset', async (req, res) => {
+    const defaultGyms = [];
+
+    try {
+        const gyms = await client.json.set('gyms', '$', defaultGyms);
+
+        res.json(gyms);
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: 'Failed to reset gyms' });
@@ -73,19 +104,6 @@ app.post('/api/gyms', async (req, res) => {
         res.status(201).json(gym);
     } catch (error) {
         res.status(500).json({ error: 'Failed to add gym' });
-    }
-});
-
-// API to reset all events
-app.post('/api/events/reset', async (req, res) => {
-    const defaultVal = {"Monday":[], "Tuesday": [], "Wednesday": [], "Thursday": [], "Friday": [], "Saturday": [], "Sunday": []};
-
-    try {
-        const events = await client.json.set('events', '$', defaultVal);
-        res.json(events);
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({ error: 'Failed to reset events' });
     }
 });
 
