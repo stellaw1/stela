@@ -44,7 +44,7 @@ app.get('/test', (req, res) => {
 });
 
 app.post('/api/gyms/reset', async (req, res) => {
-    const defaultVal = [];
+    const defaultVal = {"gyms":[]};
 
     try {
         const events = await client.json.set('gyms', '$', defaultVal);
@@ -69,7 +69,7 @@ app.post('/api/gyms', async (req, res) => {
     const { gym } = req.body;
 
     try {
-        await client.json.arrAppend('gyms', '$.' + gym);
+        await client.json.arrAppend('gyms', '$.' + "gyms", gym);
         res.status(201).json(gym);
     } catch (error) {
         res.status(500).json({ error: 'Failed to add gym' });
