@@ -1,6 +1,6 @@
 // src/components/EventForm.js
-import React, { useState, useEffect } from 'react';
-import { addEvent, deleteEvent, getGyms } from '../services/api';
+import React, { useState } from 'react';
+import { addEvent, deleteEvent } from '../services/api';
 import './EventForm.css';
 
 const daysOfWeek = [
