@@ -1,6 +1,7 @@
 // src/components/EventForm.js
 import React, { useState } from 'react';
 import { addEvent, deleteEvent } from '../services/api';
+import './EventForm.css';
 
 const daysOfWeek = [
     'Monday', 'Tuesday', 'Wednesday',
@@ -59,7 +60,7 @@ const EventForm = ({ onEventAdded }) => {
                 <input
                     type="text"
                     value={initial}
-                    onChange={(e) => setInitial(e.target.value)}
+                    onChange={(e) => setInitial(e.target.value.toUpperCase())}
                     required
                 />
             </div>
@@ -69,7 +70,7 @@ const EventForm = ({ onEventAdded }) => {
                 <input
                     type="text"
                     value={gym}
-                    onChange={(e) => setGym(e.target.value)}
+                    onChange={(e) => setGym(e.target.value.toUpperCase())}
                     required
                 />
             </div>
