@@ -52,8 +52,8 @@ app.post('/api/reset', async (req, res) => {
         const events = await client.json.set('events', '$', defaultEvents);
         const gyms = await client.json.set('gyms', '$', defaultGyms);
         res.json({
-            "events": events,
-            "gyms": gyms
+            "events": defaultEvents,
+            "gyms": defaultGyms
         });
     } catch (error) {
         console.log(error)
@@ -66,7 +66,7 @@ app.post('/api/events/reset', async (req, res) => {
 
     try {
         const events = await client.json.set('events', '$', defaultEvents);
-        res.json(events);
+        res.json(defaultEvents);
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: 'Failed to reset events' });
@@ -79,7 +79,7 @@ app.post('/api/gyms/reset', async (req, res) => {
     try {
         const gyms = await client.json.set('gyms', '$', defaultGyms);
 
-        res.json(gyms);
+        res.json(defaultGyms);
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: 'Failed to reset gyms' });
