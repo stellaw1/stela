@@ -43,6 +43,39 @@ app.get('/test', (req, res) => {
     res.send('CORS is working!');
 });
 
+app.post('/api/gyms/reset', async (req, res) => {
+    const defaultVal = [];
+
+    try {
+        const events = await client.json.set('gyms', '$', defaultVal);
+        res.json(events);
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'Failed to reset gyms' });
+    }
+});
+
+app.get('/api/gyms', async (req, res) => {
+    try {
+        const gyms = await client.json.get('gyms', '$');
+        res.json(gyms);
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'Failed to get gyms' });
+    }
+});
+
+app.post('/api/gyms', async (req, res) => {
+    const { gym } = req.body;
+
+    try {
+        await client.json.arrAppend('gyms', '$.' + gym);
+        res.status(201).json(gym);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to add gym' });
+    }
+});
+
 // API to reset all events
 app.post('/api/events/reset', async (req, res) => {
     const defaultVal = {"Monday":[], "Tuesday": [], "Wednesday": [], "Thursday": [], "Friday": [], "Saturday": [], "Sunday": []};
