@@ -69,7 +69,7 @@ app.post('/api/gyms', async (req, res) => {
     const { gym } = req.body;
 
     try {
-        await client.json.arrAppend('gyms', '$' + gym);
+        await client.json.arrAppend('gyms', '$', gym);
         res.status(201).json(gym);
     } catch (error) {
         res.status(500).json({ error: 'Failed to add gym' });
