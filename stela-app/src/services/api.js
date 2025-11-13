@@ -1,11 +1,31 @@
 // src/services/api.js
 import axios from 'axios';
 
-const API_URL = 'https://api.stellawang.com/api/events';
+const API_URL = 'https://api.stellawang.com/api';
+
+export const getGyms = async () => {
+    try {
+        const response = await axios.get(API_URL + "/gyms");
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching gyms:', error);
+        return [];
+    }
+};
+
+export const addGym = async (event) => {
+    try {
+        const response = await axios.post(API_URL + "/gyms", event);
+        console.log(response)
+        return response.data;
+    } catch (error) {
+        console.error('Error adding gym:', error);
+    }
+};
 
 export const getEvents = async () => {
     try {
-        const response = await axios.get(API_URL);
+        const response = await axios.get(API_URL + "/events");
         return response.data;
     } catch (error) {
         console.error('Error fetching events:', error);
@@ -15,7 +35,7 @@ export const getEvents = async () => {
 
 export const addEvent = async (event) => {
     try {
-        const response = await axios.post(API_URL, event);
+        const response = await axios.post(API_URL + "/events", event);
         console.log(response)
         return response.data;
     } catch (error) {
@@ -25,7 +45,7 @@ export const addEvent = async (event) => {
 
 export const deleteEvent = async (event) => {
     try {
-        const response = await axios.delete(API_URL, { data: event });
+        const response = await axios.delete(API_URL + "/events", { data: event });
         console.log(response)
         return response.data;
     } catch (error) {

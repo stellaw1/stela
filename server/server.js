@@ -44,15 +44,66 @@ app.get('/test', (req, res) => {
 });
 
 // API to reset all events
-app.post('/api/events/reset', async (req, res) => {
-    const defaultVal = {"Monday":[], "Tuesday": [], "Wednesday": [], "Thursday": [], "Friday": [], "Saturday": [], "Sunday": []};
+app.post('/api/reset', async (req, res) => {
+    const defaultEvents = {"Monday":[], "Tuesday": [], "Wednesday": [], "Thursday": [], "Friday": [], "Saturday": [], "Sunday": []};
+    const defaultGyms = [];
 
     try {
-        const events = await client.json.set('events', '$', defaultVal);
-        res.json(events);
+        const events = await client.json.set('events', '$', defaultEvents);
+        const gyms = await client.json.set('gyms', '$', defaultGyms);
+        res.json({
+            "events": defaultEvents,
+            "gyms": defaultGyms
+        });
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: 'Failed to reset events' });
+    }
+});
+
+app.post('/api/events/reset', async (req, res) => {
+    const defaultEvents = {"Monday":[], "Tuesday": [], "Wednesday": [], "Thursday": [], "Friday": [], "Saturday": [], "Sunday": []};
+
+    try {
+        const events = await client.json.set('events', '$', defaultEvents);
+        res.json(defaultEvents);
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'Failed to reset events' });
+    }
+});
+
+app.post('/api/gyms/reset', async (req, res) => {
+    const defaultGyms = [];
+
+    try {
+        const gyms = await client.json.set('gyms', '$', defaultGyms);
+
+        res.json(defaultGyms);
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'Failed to reset gyms' });
+    }
+});
+
+app.get('/api/gyms', async (req, res) => {
+    try {
+        const gyms = await client.json.get('gyms', '$');
+        res.json(gyms);
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'Failed to get gyms' });
+    }
+});
+
+app.post('/api/gyms', async (req, res) => {
+    const { gym } = req.body;
+
+    try {
+        await client.json.arrAppend('gyms', '$', gym);
+        res.status(201).json(gym);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to add gym' });
     }
 });
 

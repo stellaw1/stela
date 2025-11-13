@@ -1,71 +1,84 @@
-// src/components/EventList.js
+// src/components/EventTable.js
 import React, { useEffect, useState } from 'react';
-import { getEvents } from '../services/api';
+import { getEvents, getGyms, addGym } from '../services/api';
+import './EventTable.css';
 
-const EventTable = ({ refreshTrigger }) => {
+const EventTable = ({ onGymAdded, refreshTrigger }) => {
     const [events, setEvents] = useState([]);
+    const [gyms, setGyms] = useState([]);
+    const [newGym, setNewGym] = useState('');
+
+    const daysOfWeek = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
 
     useEffect(() => {
-        const fetchEvents = async () => {
-            const eventsData = await getEvents();
-            setEvents(eventsData);
+        const fetchData = async () => {
+        const [eventsData, gymsData] = await Promise.all([getEvents(), getGyms()]);
+        setEvents(eventsData);
+        setGyms(gymsData);
         };
-        fetchEvents();
+        fetchData();
     }, [refreshTrigger]);
 
-    const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    
-    // Step 1: Safely collect all events
-    const allEvents = daysOfWeek.flatMap(day => (events?.[day] || []));
-
-    // Step 2: Get unique gyms from all events
-    const gyms = Array.from(new Set(allEvents.map(event => event.gym)));
-
-    // Step 3: Build a schedule lookup: gym -> day -> [initials]
     const schedule = {};
     gyms.forEach(gym => {
         schedule[gym] = {};
         daysOfWeek.forEach(day => {
         const dayEvents = events?.[day] || [];
         schedule[gym][day] = dayEvents
-            .filter(event => event.gym === gym)
-            .map(event => event.initial);
+            .filter(ev => ev.gym === gym)
+            .map(ev => ev.initial);
         });
     });
 
-    // Optional: early return if no data
-    // if (gyms.length === 0) {
-    //     return <p>No events scheduled.</p>;
-    // }
+    const handleAddGym = async (e) => {
+        e.preventDefault();
+        
+        if (!newGym.trim()) return;
+
+        await addGym({ gym: newGym });
+
+        setNewGym('');
+
+        if (onGymAdded) {
+            onGymAdded(); // triggers App.js to refresh gyms
+        }
+    };
 
     return (
         <div className="event-table-container">
-            <table border="1" cellPadding="8" style={{ borderCollapse: "collapse", textAlign: "center", width: "100%" }} className="event-table">
+        <table className="event-table">
             <thead>
-                <tr>
+            <tr>
                 <th>Gym / Day</th>
-                {daysOfWeek.map(day => (
-                    <th key={day}>
-                    {day.charAt(0).toUpperCase() + day.slice(1)}
-                    </th>
-                ))}
-                </tr>
+                {daysOfWeek.map(day => <th key={day}>{day}</th>)}
+            </tr>
             </thead>
             <tbody>
-                {gyms.map(gym => (
+            {gyms.map(gym => (
                 <tr key={gym}>
-                    <td><strong>{gym}</strong></td>
-                    {daysOfWeek.map(day => (
-                    <td key={day}>
-                        {schedule[gym][day].length > 0
-                        ? schedule[gym][day].join(", ")
-                        : ""}
-                    </td>
-                    ))}
-                </tr>
+                <td className="gym-cell">{gym}</td>
+                {daysOfWeek.map(day => (
+                    <td key={day}>{(schedule[gym][day] || []).join(", ")}</td>
                 ))}
+                </tr>
+            ))}
+            {/* Add new gym row */}
+            <tr className="new-gym-row">
+                <td>
+                <form onSubmit={handleAddGym}>
+                    <input
+                    type="text"
+                    value={newGym}
+                    onChange={e => setNewGym(e.target.value.toUpperCase())}
+                    placeholder="Add gym..."
+                    className="new-gym-input"
+                    />
+                </form>
+                </td>
+                {daysOfWeek.map(day => <td key={day}></td>)}
+            </tr>
             </tbody>
-            </table>
+        </table>
         </div>
     );
 };
