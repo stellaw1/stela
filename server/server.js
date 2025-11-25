@@ -75,13 +75,14 @@ app.post('/api/events/reset', async (req, res) => {
 });
 
 app.post('/api/event/reset', async (req, res) => {
-    const daysOfWeek = ["Sunday", "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-    const currentDayIndex = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
-    const currentDay = daysOfWeek[currentDayIndex];
+    const pstDayOfWeek = new Date().toLocaleString("en-US", {
+        timeZone: "America/Los_Angeles",
+        weekday: "long",
+    });
     
     try {
         const events = await client.json.get('events', '$');
-        events[currentDay] = [];
+        events[pstDayOfWeek] = [];
         await client.json.set('events', '$', events);
 
         res.status(201).json(events);
