@@ -7,8 +7,23 @@ const EventTable = ({ onGymAdded, refreshTrigger }) => {
     const [events, setEvents] = useState([]);
     const [gyms, setGyms] = useState([]);
     const [newGym, setNewGym] = useState('');
+    const [orderedDays, setOrderedDays] = useState([]);
 
-    const daysOfWeek = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+    const daysOfWeek = ["Sunday", "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday",];
+
+    useEffect(() => {
+       const pstDayIndex = new Date().toLocaleString("en-US", {
+            timeZone: "America/Los_Angeles",
+            weekday: "long",
+        });
+
+        // Convert weekday string back to index
+        const todayIndex = daysOfWeek.indexOf(pstDayIndex);
+
+        // Rotate days so PST today is first
+        const rolledDays = [...daysOfWeek.slice(todayIndex), ...daysOfWeek.slice(0, todayIndex)];
+        setOrderedDays(rolledDays);
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -40,9 +55,12 @@ const EventTable = ({ onGymAdded, refreshTrigger }) => {
         setNewGym('');
 
         if (onGymAdded) {
-            onGymAdded(); // triggers App.js to refresh gyms
+            onGymAdded();
         }
     };
+
+    // Use orderedDays if available, otherwise use daysOfWeek
+    const displayDays = orderedDays.length > 0 ? orderedDays : daysOfWeek;
 
     return (
         <div className="event-table-container">
@@ -50,14 +68,14 @@ const EventTable = ({ onGymAdded, refreshTrigger }) => {
             <thead>
             <tr>
                 <th>Gym / Day</th>
-                {daysOfWeek.map(day => <th key={day}>{day}</th>)}
+                {displayDays.map(day => <th key={day}>{day}</th>)}
             </tr>
             </thead>
             <tbody>
             {gyms.map(gym => (
                 <tr key={gym}>
                 <td className="gym-cell">{gym}</td>
-                {daysOfWeek.map(day => (
+                {displayDays.map(day => (
                     <td key={day}>{(schedule[gym][day] || []).join(", ")}</td>
                 ))}
                 </tr>
@@ -75,7 +93,7 @@ const EventTable = ({ onGymAdded, refreshTrigger }) => {
                     />
                 </form>
                 </td>
-                {daysOfWeek.map(day => <td key={day}></td>)}
+                {displayDays.map(day => <td key={day}></td>)}
             </tr>
             </tbody>
         </table>
