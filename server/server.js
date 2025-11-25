@@ -8,7 +8,8 @@ const port = 5001;
 const allowedOrigins = [
   'http://localhost:3000',       // local dev frontend
   'https://stela-nine.vercel.app',    // deployed frontend
-  'https://stela-git-development-stellaw1s-projects.vercel.app' // deployed dev frontend
+  'https://bldr.stellawang.com', //deployed frontend synonym
+  'https://stela-git-development-stellaw1s-projects.vercel.app', // deployed dev frontend
 ];
 
 // CORS should be applied before any routes are defined
