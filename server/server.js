@@ -8,6 +8,7 @@ const port = 5001;
 const allowedOrigins = [
   'http://localhost:3000',       // local dev frontend
   'https://stela-nine.vercel.app',    // deployed frontend
+  'https://stela-git-development-stellaw1s-projects.vercel.app' // deployed dev frontend
 ];
 
 // CORS should be applied before any routes are defined
@@ -70,6 +71,22 @@ app.post('/api/events/reset', async (req, res) => {
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: 'Failed to reset events' });
+    }
+});
+
+app.post('/api/event/reset', async (req, res) => {
+    const daysOfWeek = ["Sunday", "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    const currentDayIndex = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
+    const currentDay = daysOfWeek[currentDayIndex];
+    
+    try {
+        const events = await client.json.get('events', '$');
+        events[currentDay] = [];
+        await client.json.set('events', '$', events);
+
+        res.status(201).json(events);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to delete event' });
     }
 });
 
