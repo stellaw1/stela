@@ -3,6 +3,7 @@ import './App.css';
 import React, { useEffect, useState } from 'react';
 import EventTable from './components/EventTable';
 import EventForm from './components/EventForm';
+import Footer from './components/Layout/Footer';
 import { getGyms } from './services/api';
 
 function App() {
@@ -40,6 +41,9 @@ function App() {
                     onEventAdded={handleEventAdded} 
                     gyms={gyms} // use latest gyms in dropdown
                 />
+            </div>
+            <div className="footer-container">
+                <Footer />
             </div>
         </div>
     );
