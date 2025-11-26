@@ -7,23 +7,15 @@ const EventTable = ({ onGymAdded, refreshTrigger }) => {
     const [events, setEvents] = useState([]);
     const [gyms, setGyms] = useState([]);
     const [newGym, setNewGym] = useState('');
-    const [orderedDays, setOrderedDays] = useState([]);
 
-    const daysOfWeek = ["Sunday", "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday",];
-
-    useEffect(() => {
-       const pstDayIndex = new Date().toLocaleString("en-US", {
-            timeZone: "America/Los_Angeles",
-            weekday: "long",
-        });
-
-        // Convert weekday string back to index
-        const todayIndex = daysOfWeek.indexOf(pstDayIndex);
-
-        // Rotate days so PST today is first
-        const rolledDays = [...daysOfWeek.slice(todayIndex), ...daysOfWeek.slice(0, todayIndex)];
-        setOrderedDays(rolledDays);
-    }, []);
+    const days = Array.from({ length: 14 }, (_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() + i);
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    });
 
     useEffect(() => {
         const fetchData = async () => {
@@ -33,17 +25,6 @@ const EventTable = ({ onGymAdded, refreshTrigger }) => {
         };
         fetchData();
     }, [refreshTrigger]);
-
-    const schedule = {};
-    gyms.forEach(gym => {
-        schedule[gym] = {};
-        daysOfWeek.forEach(day => {
-        const dayEvents = events?.[day] || [];
-        schedule[gym][day] = dayEvents
-            .filter(ev => ev.gym === gym)
-            .map(ev => ev.initial);
-        });
-    });
 
     const handleAddGym = async (e) => {
         e.preventDefault();
@@ -59,24 +40,30 @@ const EventTable = ({ onGymAdded, refreshTrigger }) => {
         }
     };
 
-    // Use orderedDays if available, otherwise use daysOfWeek
-    const displayDays = orderedDays.length > 0 ? orderedDays : daysOfWeek;
-
     return (
         <div className="event-table-container">
         <table className="event-table">
             <thead>
             <tr>
                 <th>Gym / Day</th>
-                {displayDays.map(day => <th key={day}>{day}</th>)}
+                {days.map(day => {
+                    const d = new Date(day);
+                    const weekday = d.toLocaleDateString('en-US', { weekday: 'long' });
+                    return (
+                        <th key={day} style={{ verticalAlign: 'bottom' }}>
+                            <div style={{ fontSize: '0.8em', color: '#888', whiteSpace: 'nowrap' }}>{day}</div>
+                            <div style={{ fontWeight: 'bold', whiteSpace: 'nowrap'}}>{weekday.toUpperCase()}</div>
+                        </th>
+                    );
+                })}
             </tr>
             </thead>
             <tbody>
             {gyms.map(gym => (
                 <tr key={gym}>
                 <td className="gym-cell">{gym}</td>
-                {displayDays.map(day => (
-                    <td key={day}>{(schedule[gym][day] || []).join(", ")}</td>
+                {days.map(day => (
+                    <td key={day}>{(events[day][gym] || []).join(", ")}</td>
                 ))}
                 </tr>
             ))}
@@ -93,7 +80,7 @@ const EventTable = ({ onGymAdded, refreshTrigger }) => {
                     />
                 </form>
                 </td>
-                {displayDays.map(day => <td key={day}></td>)}
+                {days.map(day => <td key={day}></td>)}
             </tr>
             </tbody>
         </table>

@@ -4,7 +4,7 @@ const redis = require('redis');
 const cors = require('cors');
 
 const app = express();
-const port = 5001;
+const port = 5002;
 const allowedOrigins = [
   'http://localhost:3000',       // local dev frontend
   'https://stela-nine.vercel.app',    // deployed frontend
