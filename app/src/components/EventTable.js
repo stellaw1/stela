@@ -47,7 +47,7 @@ const EventTable = ({ onGymAdded, refreshTrigger }) => {
             <tr>
                 <th>Gym / Day</th>
                 {days.map(day => {
-                    const d = new Date(day);
+                    const d = new Date(day + "T00:00:00-08:00");
                     const weekday = d.toLocaleDateString('en-US', { weekday: 'long' });
                     return (
                         <th key={day} style={{ verticalAlign: 'bottom' }}>
