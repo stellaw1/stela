@@ -1,7 +1,7 @@
 // src/services/api.js
 import axios from 'axios';
 
-const API_URL = 'https://api.stellawang.com/api';
+const API_URL = 'http://localhost:5001/api';
 
 export const getGyms = async () => {
     try {

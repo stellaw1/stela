@@ -3,11 +3,14 @@ import React, { useState } from 'react';
 import { addEvent, deleteEvent } from '../services/api';
 import './EventForm.css';
 
-const daysOfWeek = [
-    'Monday', 'Tuesday', 'Wednesday',
-    'Thursday', 'Friday', 'Saturday', 'Sunday'
-];
-
+const days = Array.from({ length: 14 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() + i);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+});
 const EventForm = ({ onEventAdded, gyms }) => {
     const [initial, setInitial] = useState('');
     const [gym, setGym] = useState('');
@@ -85,7 +88,7 @@ const EventForm = ({ onEventAdded, gyms }) => {
                     required
                 >
                     <option value="" disabled>Select a day</option>
-                    {daysOfWeek.map((d) => (
+                    {days.map((d) => (
                         <option key={d} value={d}>{d}</option>
                     ))}
                 </select>
