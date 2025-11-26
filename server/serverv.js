@@ -20,17 +20,17 @@ app.use(cors({
 
 // Connect to Redis
 // const client = redis.createClient({ url: 'redis://localhost:6379' });
-// const dbHost = process.env.REDIS_DB_HOST;
-// const dbPass = process.env.REDIS_DB_PASS;
-// const client = redis.createClient({
-//     username: 'default',
-//     password: dbPass,
-//     socket: {
-//         host: dbHost,
-//         port: 11692
-//     }
-// });
-const client = require('./mockRedisClient');
+const dbHost = process.env.REDIS_DB_HOST;
+const dbPass = process.env.REDIS_DB_PASS;
+const client = redis.createClient({
+    username: 'default',
+    password: dbPass,
+    socket: {
+        host: dbHost,
+        port: 11692
+    }
+});
+// const client = require('./mockRedisClient');
 
 client.on('error', err => console.log('Redis Client Error', err));
 
@@ -66,14 +66,14 @@ app.post('/api/reset', async (req, res) => {
     }
 });
 
-// POST Api/Refresh refreshes the new 7 day window while adding the existing events for overlapping days.
+// POST Api/Refresh refreshes the new 14 day window while adding the existing events for overlapping days.
 app.post('/api/refresh', async (req, res) => {
     try {
         // Get the current events
         let events = await client.json.get('events', '$');
         if (!events) events = {};
 
-        // Build the new 7-day window
+        // Build the new 14 day window
         const newDays = Array.from({length: 14}, (_, i) => {
             const d = new Date();
             d.setDate(d.getDate() + i);
