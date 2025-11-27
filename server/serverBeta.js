@@ -98,7 +98,7 @@ app.post('/api/gyms/reset', async (req, res) => {
     try {
         const gyms = await client.json.set('gyms', '$', defaultGyms);
 
-        res.json(defaultGyms);
+        res.json(gyms);
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: 'Failed to reset gyms' });
