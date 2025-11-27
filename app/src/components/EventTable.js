@@ -3,28 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { getEvents, getGyms, addGym } from '../services/api';
 import './EventTable.css';
 
-const EventTable = ({ onGymAdded, refreshTrigger }) => {
-    const [events, setEvents] = useState([]);
-    const [gyms, setGyms] = useState([]);
+const EventTable = ({ onGymAdded, refreshTrigger, gyms, events}) => {
     const [newGym, setNewGym] = useState('');
-
-    const days = Array.from({ length: 14 }, (_, i) => {
-        const d = new Date();
-        d.setDate(d.getDate() + i);
-        const yyyy = d.getFullYear();
-        const mm = String(d.getMonth() + 1).padStart(2, '0');
-        const dd = String(d.getDate()).padStart(2, '0');
-        return `${yyyy}-${mm}-${dd}`;
-    });
-
-    useEffect(() => {
-        const fetchData = async () => {
-        const [eventsData, gymsData] = await Promise.all([getEvents(), getGyms()]);
-        setEvents(eventsData);
-        setGyms(gymsData);
-        };
-        fetchData();
-    }, [refreshTrigger]);
 
     const handleAddGym = async (e) => {
         e.preventDefault();
@@ -40,19 +20,27 @@ const EventTable = ({ onGymAdded, refreshTrigger }) => {
         }
     };
 
+    if (events === null || gyms === null) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <div className="event-table-container">
         <table className="event-table">
             <thead>
             <tr>
                 <th>Gym / Day</th>
-                {days.map(day => {
+                {Object.keys(events).sort().map(day => {
+                    // Needed to convert day string to Date in PST
                     const d = new Date(day + "T00:00:00-08:00");
-                    const weekday = d.toLocaleDateString('en-US', { weekday: 'long' });
+                    // Format: 'Dec 1'
+                    const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    // Format: 'SUNDAY', 'MONDAY', etc.
+                    const weekdayStr = d.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
                     return (
-                        <th key={day} style={{ verticalAlign: 'bottom' }}>
-                            <div style={{ fontSize: '0.8em', color: '#888', whiteSpace: 'nowrap' }}>{day}</div>
-                            <div style={{ fontWeight: 'bold', whiteSpace: 'nowrap'}}>{weekday.toUpperCase()}</div>
+                        <th key={day} style={{ verticalAlign: 'bottom', textAlign: 'center' }}>
+                            <div style={{ fontSize: '0.8em', color: '#888', whiteSpace: 'nowrap' }}>{dateStr}</div>
+                            <div style={{ fontWeight: 'bold', whiteSpace: 'nowrap'}}>{weekdayStr}</div>
                         </th>
                     );
                 })}
@@ -62,7 +50,7 @@ const EventTable = ({ onGymAdded, refreshTrigger }) => {
             {gyms.map(gym => (
                 <tr key={gym}>
                 <td className="gym-cell">{gym}</td>
-                {days.map(day => (
+                {Object.keys(events).sort().map(day => (
                     <td key={day}>{(events[day][gym] || []).join(", ")}</td>
                 ))}
                 </tr>
@@ -80,7 +68,7 @@ const EventTable = ({ onGymAdded, refreshTrigger }) => {
                     />
                 </form>
                 </td>
-                {days.map(day => <td key={day}></td>)}
+                {Object.keys(events).sort().map(day => <td key={day}></td>)}
             </tr>
             </tbody>
         </table>

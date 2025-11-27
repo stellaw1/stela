@@ -4,11 +4,12 @@ import React, { useEffect, useState } from 'react';
 import EventTable from './components/EventTable';
 import EventForm from './components/EventForm';
 import Footer from './components/Layout/Footer';
-import { getGyms } from './services/api';
+import { getGyms, getEvents } from './services/api';
 
 function App() {
     const [refreshTrigger, setRefreshTrigger] = useState(0);
     const [gyms, setGyms] = useState([]);
+    const [events, setEvents] = useState(null);
 
     // Called when any event or gym is added, triggers EventTable refresh
     const handleEventAdded = () => {
@@ -16,11 +17,15 @@ function App() {
     };
 
     useEffect(() => {
-        const fetchGyms = async () => {
-        const gymsData = await getGyms();
-        setGyms(gymsData);
+        const fetchData = async () => {
+            const [gymsData, eventsData] = await Promise.all([
+                getGyms(),
+                getEvents()
+            ]);
+            setGyms(gymsData);
+            setEvents(eventsData);
         };
-        fetchGyms();
+        fetchData();
     }, [refreshTrigger]);
 
     const handleGymAdded = () => setRefreshTrigger(prev => prev + 1);
@@ -33,13 +38,16 @@ function App() {
             <div className="panel">
                 <EventTable
                     refreshTrigger={refreshTrigger}
-                    onGymAdded={handleGymAdded} // notify App when gyms change
+                    onGymAdded={handleGymAdded}
+                    gyms={gyms}
+                    events={events}
                 />
             </div>
             <div className="panel">
                 <EventForm
-                    onEventAdded={handleEventAdded} 
-                    gyms={gyms} // use latest gyms in dropdown
+                    onEventAdded={handleEventAdded}
+                    gyms={gyms}
+                    events={events}
                 />
             </div>
             <div className="footer-container">
