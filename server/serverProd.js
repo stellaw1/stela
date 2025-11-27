@@ -46,16 +46,20 @@ app.get('/test', (req, res) => {
     res.send('CORS is working!');
 });
 
+// Gets date string in the format 'yyyy-mm-dd' in PST given a Date object
+function getDateString(day) {
+    return day.toLocaleString('en-CA', { timeZone: 'America/Los_Angeles', year: 'numeric', month: '2-digit', day: '2-digit' });
+}
+
 // POST Api/Reset resets all events and gyms
 app.post('/api/reset', async (req, res) => {
     try {
         const defaultEvents = Object.fromEntries(
         Array.from({length: 14}, (_, i) => {
             // Get current date in PST as yyyy-mm-dd, then add i days
-            const d = new Date();
-            d.setDate(d.getDate() + i);
-            const pstString = d.toLocaleString('en-CA', { timeZone: 'America/Los_Angeles', year: 'numeric', month: '2-digit', day: '2-digit' });
-            return [`${pstString}`, {}];
+            const day = new Date();
+            day.setDate(day.getDate() + i);
+            return [getDateString(day), {}];
         })
     );
         await client.json.set('events', '$', defaultEvents);
@@ -70,24 +74,19 @@ app.post('/api/refresh', async (req, res) => {
     try {
         // Get the current events
         let events = await client.json.get('events', '$');
-        if (!events) events = {};
 
-        // Build the new 14 day window
-        const newDays = Array.from({length: 14}, (_, i) => {
-            const d = new Date();
-            d.setDate(d.getDate() + i);
-            const pstString = d.toLocaleString('en-CA', { timeZone: 'America/Los_Angeles', year: 'numeric', month: '2-digit', day: '2-digit' });
-            return `${pstString}`;
-        });
+        const day = new Date();
+        day.setDate(day.getDate() - 1);
 
-        // Build the new events object, keeping existing data for overlapping days
-        const refreshedEvents = {};
-        for (const day of newDays) {
-            refreshedEvents[day] = events[day] || [];
-        }
+        // Remove past day
+        delete events[getDateString(day)];
 
-        await client.json.set('events', '$', refreshedEvents);
-        res.status(201).json(refreshedEvents);
+        // Add new 14th day;
+        day.setDate(day.getDate() + 14);
+        events[getDateString(day)] = {};
+
+        await client.json.set('events', '$', events);
+        res.status(201).json(events);
     } catch (error) {
         res.status(500).json({ error: 'Failed to refresh events' });
     }
@@ -98,8 +97,6 @@ app.post('/api/gyms/reset', async (req, res) => {
     const defaultGyms = [];
 
     try {
-        const gyms = await client.json.set('gyms', '$', defaultGyms);
-
         res.json(defaultGyms);
     } catch (error) {
         console.log(error)
@@ -146,10 +143,8 @@ app.post('/api/events', async (req, res) => {
     const { initial, gym, day } = req.body;
 
     try {
-        let events = await client.json.get('events', '$');
-        events[day][gym].push(initial);
-
-        await client.json.set('events', '$', events);
+        await client.json.set('events', '$.["' + day + '"]["' + gym + '"]', [], { NX: true });
+        await client.json.arrAppend('events', '$.["' + day + '"]["' + gym + '"]', initial);
         res.status(201).json({ initial, gym, day });
     } catch (error) {
         res.status(500).json({ error: 'Failed to add event' });
