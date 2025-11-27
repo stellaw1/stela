@@ -142,12 +142,12 @@ app.get('/api/events', async (req, res) => {
 
 // POST Api/events adds an event
 app.post('/api/events', async (req, res) => {
-    const { initial, gym, day } = req.body;
+    const { name, gym, date } = req.body;
 
     try {
-        await client.json.set('events', '$.["' + day + '"]["' + gym + '"]', [], { NX: true });
-        await client.json.arrAppend('events', '$.["' + day + '"]["' + gym + '"]', initial);
-        res.status(201).json({ initial, gym, day });
+        await client.json.set('events', '$.["' + date + '"]["' + gym + '"]', [], { NX: true });
+        await client.json.arrAppend('events', '$.["' + date + '"]["' + gym + '"]', name);
+        res.status(201).json({ name, gym, date });
     } catch (error) {
         res.status(500).json({ error: 'Failed to add event' });
     }
@@ -155,13 +155,13 @@ app.post('/api/events', async (req, res) => {
 
 // DELETE Api/events deletes an event
 app.delete('/api/events', async (req, res) => {
-    const { initial, gym, day } = req.body;
+    const { name, gym, date } = req.body;
 
     try {
         const events = await client.json.get('events', '$');
-        const idx = events[day][gym].indexOf(initial);
+        const idx = events[date][gym].indexOf(name);
         if (idx !== -1) {
-            events[day][gym].splice(idx, 1);
+            events[date][gym].splice(idx, 1);
         }
 
         await client.json.set('events', '$', events);

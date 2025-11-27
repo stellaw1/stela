@@ -4,21 +4,21 @@ import { addEvent, deleteEvent } from '../services/api';
 import './EventForm.css';
 
 const EventForm = ({ onEventAdded, gyms, events}) => {
-    const [initial, setInitial] = useState('');
+    const [name, setName] = useState('');
     const [gym, setGym] = useState('');
-    const [day, setDay] = useState('');
+    const [date, setDay] = useState('');
 
     const handleAdd = async (e) => {
         e.preventDefault();
         const newEvent = {
-            initial,
+            name,
             gym,
-            day
+            date
         };
 
         await addEvent(newEvent);
 
-        setInitial('');
+        setName('');
         setGym('');
         setDay('');
 
@@ -30,11 +30,11 @@ const EventForm = ({ onEventAdded, gyms, events}) => {
     const handleDelete = async (e) => {
         e.preventDefault();
 
-        const newEvent = { initial, gym, day };
+        const newEvent = { name, gym, date };
 
         await deleteEvent(newEvent);
 
-        setInitial('');
+        setName('');
         setGym('');
         setDay('');
 
@@ -47,17 +47,16 @@ const EventForm = ({ onEventAdded, gyms, events}) => {
     return (
         <form onSubmit={handleAdd} className="add-event-form">
             <div>
-                <label className="form-label">Initial</label>
+                <label className="form-label">Name</label>
                 <input
                     className="form-input"
                     type="text"
-                    value={initial}
-                    onChange={(e) => setInitial(e.target.value.toUpperCase())}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     required
                 />
             </div>
 
-            {/* 🆕 Dropdown replaces the previous Gym input */}
             <div>
                 <label className="form-label">Gym</label>
                 <select
@@ -67,8 +66,8 @@ const EventForm = ({ onEventAdded, gyms, events}) => {
                     required
                 >
                     <option value="" disabled>Select a gym</option>
-                    {gyms.map((g) => (
-                        <option key={g} value={g}>{g}</option>
+                    {gyms.map((gym) => (
+                        <option key={gym} value={gym}>{gym}</option>
                     ))}
                 </select>
             </div>
@@ -77,19 +76,19 @@ const EventForm = ({ onEventAdded, gyms, events}) => {
                 <label className="form-label">Day</label>
                 <select
                     className="form-select"
-                    value={day}
+                    value={date}
                     onChange={(e) => setDay(e.target.value)}
                     required
                 >
-                    <option value="" disabled>Select a day</option>
-                    {Object.keys(events).sort().map((d) => {
-                        const dateObj = new Date(d + "T00:00:00-08:00");
-                        const weekday = dateObj.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
-                        const month = dateObj.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
+                    <option value="" disabled>Select a date</option>
+                    {Object.keys(events).sort().map((day) => {
+                        const dateObj = new Date(day + "T00:00:00-08:00");
+                        const weekday = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
+                        const month = dateObj.toLocaleDateString('en-US', { month: 'short' });
                         const dayNum = dateObj.getDate();
                         const display = `${weekday} ${month} ${dayNum}`;
                         return (
-                            <option key={d} value={d}>{display}</option>
+                            <option key={day} value={day}>{display}</option>
                         );
                     })}
                 </select>

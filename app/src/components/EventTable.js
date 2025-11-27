@@ -1,10 +1,34 @@
 // src/components/EventTable.js
-import React, { useEffect, useState } from 'react';
-import { getEvents, getGyms, addGym } from '../services/api';
+import React, { useState, useEffect } from 'react';
+import { addGym } from '../services/api';
 import './EventTable.css';
 
 const EventTable = ({ onGymAdded, refreshTrigger, gyms, events}) => {
     const [newGym, setNewGym] = useState('');
+    const [currentPage, setCurrentPage] = useState(0);
+    const [daysPerPage, setDaysPerPage] = useState(7);
+
+    // Calculate days per page based on window width
+    useEffect(() => {
+        const calculateDaysPerPage = () => {
+            const width = window.innerWidth;
+            if (width < 480) {
+                setDaysPerPage(2);
+            } else if (width < 768) {
+                setDaysPerPage(3);
+            } else if (width < 1024) {
+                setDaysPerPage(5);
+            } else {
+                setDaysPerPage(7);
+            }
+            // Reset to first page on resize
+            setCurrentPage(0);
+        };
+
+        calculateDaysPerPage();
+        window.addEventListener('resize', calculateDaysPerPage);
+        return () => window.removeEventListener('resize', calculateDaysPerPage);
+    }, []);
 
     const handleAddGym = async (e) => {
         e.preventDefault();
@@ -24,54 +48,91 @@ const EventTable = ({ onGymAdded, refreshTrigger, gyms, events}) => {
         return <div>Loading...</div>;
     }
 
+    const sortedDates = Object.keys(events).sort();
+    const totalPages = Math.ceil(sortedDates.length / daysPerPage);
+    const startIdx = currentPage * daysPerPage;
+    const endIdx = startIdx + daysPerPage;
+    const visibleDates = sortedDates.slice(startIdx, endIdx);
+
+    const handlePrevious = () => {
+        setCurrentPage(prev => Math.max(0, prev - 1));
+    };
+
+    const handleNext = () => {
+        setCurrentPage(prev => Math.min(totalPages - 1, prev + 1));
+    };
+
     return (
-        <div className="event-table-container">
-        <table className="event-table">
-            <thead>
-            <tr>
-                <th>Gym / Day</th>
-                {Object.keys(events).sort().map(day => {
-                    // Needed to convert day string to Date in PST
-                    const d = new Date(day + "T00:00:00-08:00");
-                    // Format: 'Dec 1'
-                    const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                    // Format: 'SUNDAY', 'MONDAY', etc.
-                    const weekdayStr = d.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
-                    return (
-                        <th key={day} style={{ verticalAlign: 'bottom', textAlign: 'center' }}>
-                            <div style={{ fontSize: '0.8em', color: '#888', whiteSpace: 'nowrap' }}>{dateStr}</div>
-                            <div style={{ fontWeight: 'bold', whiteSpace: 'nowrap'}}>{weekdayStr}</div>
-                        </th>
-                    );
-                })}
-            </tr>
-            </thead>
-            <tbody>
-            {gyms.map(gym => (
-                <tr key={gym}>
-                <td className="gym-cell">{gym}</td>
-                {Object.keys(events).sort().map(day => (
-                    <td key={day}>{(events[day][gym] || []).join(", ")}</td>
-                ))}
-                </tr>
-            ))}
-            {/* Add new gym row */}
-            <tr className="new-gym-row">
-                <td>
-                <form onSubmit={handleAddGym}>
-                    <input
-                    type="text"
-                    value={newGym}
-                    onChange={e => setNewGym(e.target.value.toUpperCase())}
-                    placeholder="Add gym..."
-                    className="new-gym-input"
-                    />
-                </form>
-                </td>
-                {Object.keys(events).sort().map(day => <td key={day}></td>)}
-            </tr>
-            </tbody>
-        </table>
+        <div className="event-table-wrapper">
+            <div className="event-table-container">
+                <table className="event-table">
+                    <thead>
+                    <tr>
+                        <th>Gym / Date</th>
+                        {visibleDates.map(date => {
+                            // Needed to convert date string to Date in PST
+                            const day = new Date(date + "T00:00:00-08:00");
+                            // Format: 'Dec 1'
+                            const dateStr = day.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                            // Format: 'Sunday', 'Monday', etc.
+                            const weekdateStr = day.toLocaleDateString('en-US', { weekday: 'long' });
+                            return (
+                                <th key={date} className="event-table-header-cell">
+                                    <div className="event-table-header-date">{dateStr}</div>
+                                    <div className="event-table-header-weekdate">{weekdateStr}</div>
+                                </th>
+                            );
+                        })}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {gyms.map(gym => (
+                        <tr key={gym}>
+                        <td className="gym-cell">{gym}</td>
+                        {visibleDates.map(date => (
+                            <td key={date}>{(events[date][gym] || []).join(", ")}</td>
+                        ))}
+                        </tr>
+                    ))}
+                    <tr className="new-gym-row">
+                        <td>
+                        <form onSubmit={handleAddGym}>
+                            <input
+                            type="text"
+                            value={newGym}
+                            onChange={e => setNewGym(e.target.value.toUpperCase())}
+                            placeholder="Add gym..."
+                            className="new-gym-input"
+                            />
+                        </form>
+                        </td>
+                        {visibleDates.map(date => <td key={date}></td>)}
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div className="pagination-controls">
+                <button 
+                    className="pagination-button pagination-prev"
+                    onClick={handlePrevious}
+                    disabled={currentPage === 0}
+                    aria-label="Previous dates"
+                >
+                    ← Back
+                </button>
+                <span className="pagination-info">
+                    {currentPage + 1} / {totalPages || 1}
+                </span>
+                <button 
+                    className="pagination-button pagination-next"
+                    onClick={handleNext}
+                    disabled={currentPage >= totalPages - 1}
+                    aria-label="Next dates"
+                >
+                    Forward →
+                </button>
+            </div>
         </div>
     );
 };
