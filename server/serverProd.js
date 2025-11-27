@@ -82,7 +82,7 @@ app.post('/api/refresh', async (req, res) => {
         delete events[getDateString(day)];
 
         // Add new 14th day;
-        day.setDate(day.getDate() + 13);
+        day.setDate(day.getDate() + 14);
         events[getDateString(day)] = {};
 
         await client.json.set('events', '$', events);
