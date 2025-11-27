@@ -3,26 +3,17 @@ import React, { useState } from 'react';
 import { addEvent, deleteEvent } from '../services/api';
 import './EventForm.css';
 
-const days = Array.from({ length: 14 }, (_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() + i);
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
-});
-const EventForm = ({ onEventAdded, gyms }) => {
+const EventForm = ({ onEventAdded, gyms, events}) => {
     const [initial, setInitial] = useState('');
     const [gym, setGym] = useState('');
     const [day, setDay] = useState('');
 
     const handleAdd = async (e) => {
         e.preventDefault();
-
         const newEvent = {
             initial,
             gym,
-            day: day
+            day
         };
 
         await addEvent(newEvent);
@@ -50,6 +41,9 @@ const EventForm = ({ onEventAdded, gyms }) => {
         if (onEventAdded) onEventAdded();
     };
 
+    if (events === null || gyms === null) {
+        return <div>Loading...</div>;
+    }
     return (
         <form onSubmit={handleAdd} className="add-event-form">
             <div>
@@ -88,9 +82,16 @@ const EventForm = ({ onEventAdded, gyms }) => {
                     required
                 >
                     <option value="" disabled>Select a day</option>
-                    {days.map((d) => (
-                        <option key={d} value={d}>{d}</option>
-                    ))}
+                    {Object.keys(events).sort().map((d) => {
+                        const dateObj = new Date(d + "T00:00:00-08:00");
+                        const weekday = dateObj.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
+                        const month = dateObj.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
+                        const dayNum = dateObj.getDate();
+                        const display = `${weekday} ${month} ${dayNum}`;
+                        return (
+                            <option key={d} value={d}>{display}</option>
+                        );
+                    })}
                 </select>
             </div>
 

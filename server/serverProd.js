@@ -51,12 +51,11 @@ app.post('/api/reset', async (req, res) => {
     try {
         const defaultEvents = Object.fromEntries(
         Array.from({length: 14}, (_, i) => {
+            // Get current date in PST as yyyy-mm-dd, then add i days
             const d = new Date();
             d.setDate(d.getDate() + i);
-            const yyyy = d.getFullYear();
-            const mm = String(d.getMonth() + 1).padStart(2, '0');
-            const dd = String(d.getDate()).padStart(2, '0');
-            return [`${yyyy}-${mm}-${dd}`, {}];
+            const pstString = d.toLocaleString('en-CA', { timeZone: 'America/Los_Angeles', year: 'numeric', month: '2-digit', day: '2-digit' });
+            return [`${pstString}`, {}];
         })
     );
         await client.json.set('events', '$', defaultEvents);
@@ -77,10 +76,8 @@ app.post('/api/refresh', async (req, res) => {
         const newDays = Array.from({length: 14}, (_, i) => {
             const d = new Date();
             d.setDate(d.getDate() + i);
-            const yyyy = d.getFullYear();
-            const mm = String(d.getMonth() + 1).padStart(2, '0');
-            const dd = String(d.getDate()+1).padStart(2, '0');
-            return `${yyyy}-${mm}-${dd}`;
+            const pstString = d.toLocaleString('en-CA', { timeZone: 'America/Los_Angeles', year: 'numeric', month: '2-digit', day: '2-digit' });
+            return `${pstString}`;
         });
 
         // Build the new events object, keeping existing data for overlapping days
@@ -150,16 +147,6 @@ app.post('/api/events', async (req, res) => {
 
     try {
         let events = await client.json.get('events', '$');
-        if (!events) events = {};
-
-        if (!events[day]) {
-            events[day] = {};
-        }
-
-        if (!events[day][gym]) {
-            events[day][gym] = [];
-        }
-        
         events[day][gym].push(initial);
 
         await client.json.set('events', '$', events);
