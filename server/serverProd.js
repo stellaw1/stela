@@ -147,16 +147,6 @@ app.post('/api/events', async (req, res) => {
 
     try {
         let events = await client.json.get('events', '$');
-        if (!events) events = {};
-
-        if (!events[day]) {
-            events[day] = {};
-        }
-
-        if (!events[day][gym]) {
-            events[day][gym] = [];
-        }
-        
         events[day][gym].push(initial);
 
         await client.json.set('events', '$', events);
