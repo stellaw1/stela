@@ -1,5 +1,50 @@
 /* EventTable component styles */
 
+.event-table-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 0 10px;
+}
+
+.pagination-button {
+  padding: 8px 14px;
+  border: 1px solid var(--color-light-grey);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.pagination-button:hover:not(:disabled) {
+  background-color: var(--color-panel-background);
+  border-color: var(--color-dark-grey);
+}
+
+.pagination-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  min-width: 50px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
 .event-table-container {
   overflow-x: auto;
 }
@@ -84,20 +129,69 @@
   white-space: nowrap;
 }
 
-.event-table-header-weekday {
+.event-table-header-weekdate {
   font-weight: bold;
   white-space: nowrap;
 }
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
+  .pagination-controls {
+    gap: 8px;
+    padding: 0 5px;
+  }
+
+  .pagination-button {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+
+  .pagination-info {
+    font-size: 0.8rem;
+  }
+
   .event-table th,
   .event-table td {
-    padding: 8px 6px;
+    padding: 12px 6px;
     font-size: 0.85rem;
+  }
+
+  .event-table thead th {
+    padding: 14px 6px;
   }
 
   .new-gym-input {
     font-size: 0.85rem;
+    padding: 8px 4px;
+  }
+
+  .gym-cell {
+    padding-left: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pagination-button {
+    padding: 5px 8px;
+    font-size: 0.75rem;
+  }
+
+  .pagination-info {
+    font-size: 0.75rem;
+    min-width: 40px;
+  }
+
+  .event-table th,
+  .event-table td {
+    padding: 14px 4px;
+    font-size: 0.8rem;
+  }
+
+  .event-table-header-date {
+    font-size: 0.7em;
+  }
+
+  .event-table-header-weekdate {
+    font-size: 0.9rem;
   }
 }
