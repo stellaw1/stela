@@ -1,7 +1,7 @@
 // src/services/api.js
 import axios from 'axios';
 
-const API_URL = 'https://api.stellawang.com/api';
+const API_URL = 'https://apyic6eiwi.execute-api.us-west-2.amazonaws.com/prod';
 
 export const getGyms = async () => {
     try {
