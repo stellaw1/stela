@@ -19,7 +19,6 @@ app.use(cors({
 }));
 
 // Connect to Redis
-// const client = redis.createClient({ url: 'redis://localhost:6379' });
 const dbHost = process.env.REDIS_DB_HOST;
 const dbPass = process.env.REDIS_DB_PASS;
 const client = redis.createClient({
@@ -30,7 +29,6 @@ const client = redis.createClient({
         port: 11692
     }
 });
-// const client = require('./mockRedisClient');
 
 client.on('error', err => console.log('Redis Client Error', err));
 
@@ -40,10 +38,6 @@ app.use(express.json());
 
 app.get('/ping', (req, res) => {
     res.send('pong'); // Send a simple response like "pong"
-});
-
-app.get('/test', (req, res) => {
-    res.send('CORS is working!');
 });
 
 // Gets date string in the format 'yyyy-mm-dd' in PST given a Date object
@@ -69,21 +63,25 @@ app.post('/api/reset', async (req, res) => {
     }
 });
 
-// POST Api/Refresh refreshes the new 14 day window while adding the existing events for overlapping days.
+// POST Api/Refresh deletes 7 days in the previous week and adds 7 days of the trailing week
 app.post('/api/refresh', async (req, res) => {
     try {
         // Get the current events
         let events = await client.json.get('events', '$');
 
-        const day = new Date();
-        day.setDate(day.getDate() - 1);
+        const prevDay = new Date();
+        prevDay.setDate(prevDay.getDate() - 1);
+        const newDay = new Date();
+        newDay.setDate(newDay.getDate() + 7);
+        for (let i = 0; i < 7; i++) {
+            // Remove days from past week
+            delete events[getDateString(prevDay)];
+            prevDay.setDate(prevDay.getDate() - 1);
 
-        // Remove past day
-        delete events[getDateString(day)];
-
-        // Add new 14th day;
-        day.setDate(day.getDate() + 14);
-        events[getDateString(day)] = {};
+            // Add days for new week;
+            events[getDateString(newDay)] = {};
+            newDay.setDate(newDay.getDate() + 1);
+        }
 
         await client.json.set('events', '$', events);
         res.status(201).json(events);
