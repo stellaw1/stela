@@ -54,7 +54,6 @@
   right: 0;
   flex-direction: column;
   background-color: var(--color-background);
-  border-bottom: 2px solid var(--color-light-grey);
   padding: 12px 16px;
   gap: 8px;
   z-index: 100;
@@ -62,6 +61,8 @@
 
 .header-nav.open {
   display: flex;
+  border-top: 1px solid var(--color-light-grey);
+  border-bottom: 1px solid var(--color-light-grey);
 }
 
 .app-header.menu-open {
