@@ -6,17 +6,27 @@ const cors = require('cors');
 const app = express();
 const port = 5001;
 const allowedOrigins = [
-  'http://localhost:3000',       // local dev frontend
-  'https://stela-nine.vercel.app',    // deployed frontend
-  'https://bldr.stellawang.com', //deployed frontend synonym
-  'https://bldr-git-updateserver-stellaw1s-projects.vercel.app/', // deployed dev frontend
+  'http://localhost:3000',
+  'https://stela-nine.vercel.app',
+  'https://bldr.stellawang.com',
 ];
 
-// CORS should be applied before any routes are defined
-app.use(cors({
-    origin: allowedOrigins, // React app origin
-    methods: ['GET', 'POST', 'DELETE'],       // Allowed methods
-}));
+const corsOptions = {
+  origin: function (origin, callback) {
+    const pattern = /^https:\/\/.*-stellaw1s-projects\.vercel\.app$/;
+
+    if (!origin) return callback(null, true); // allow server-to-server / Postman
+
+    if (allowedOrigins.includes(origin) || pattern.test(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS: ' + origin));
+    }
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 // Connect to Redis
 const dbHost = process.env.REDIS_DB_HOST;
