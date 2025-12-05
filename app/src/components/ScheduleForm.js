@@ -1,10 +1,10 @@
-// src/components/EventForm.js
+// src/components/ScheduleForm.js
 import React, { useState } from 'react';
 import { addEvent, deleteEvent } from '../services/api';
 import { isPastDate } from '../utils/dateHelpers';
-import './EventForm.css';
+import './ScheduleForm.css';
 
-const EventForm = ({ onEventAdded, gyms, events}) => {
+const ScheduleForm = ({ onEventAdded, gyms, events}) => {
     const [name, setName] = useState('');
     const [gym, setGym] = useState('');
     const [date, setDay] = useState('');
@@ -104,4 +104,4 @@ const EventForm = ({ onEventAdded, gyms, events}) => {
     );
 };
 
-export default EventForm;
+export default ScheduleForm;
