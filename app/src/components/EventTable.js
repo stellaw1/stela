@@ -6,29 +6,7 @@ import './EventTable.css';
 const EventTable = ({ onGymAdded, refreshTrigger, gyms, events}) => {
     const [newGym, setNewGym] = useState('');
     const [currentPage, setCurrentPage] = useState(0);
-    const [daysPerPage, setDaysPerPage] = useState(7);
-
-    // Calculate days per page based on window width
-    useEffect(() => {
-        const calculateDaysPerPage = () => {
-            const width = window.innerWidth;
-            if (width < 480) {
-                setDaysPerPage(2);
-            } else if (width < 768) {
-                setDaysPerPage(3);
-            } else if (width < 1024) {
-                setDaysPerPage(5);
-            } else {
-                setDaysPerPage(7);
-            }
-            // Reset to first page on resize
-            setCurrentPage(0);
-        };
-
-        calculateDaysPerPage();
-        window.addEventListener('resize', calculateDaysPerPage);
-        return () => window.removeEventListener('resize', calculateDaysPerPage);
-    }, []);
+    const daysPerPage = 7;
 
     const handleAddGym = async (e) => {
         e.preventDefault();
