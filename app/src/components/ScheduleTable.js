@@ -1,10 +1,10 @@
-// src/components/EventTable.js
+// src/components/ScheduleTable.js
 import React, { useState, useEffect } from 'react';
 import { addGym } from '../services/api';
 import { isPastDate } from '../utils/dateHelpers';
-import './EventTable.css';
+import './ScheduleTable.css';
 
-const EventTable = ({ onGymAdded, refreshTrigger, gyms, events}) => {
+const ScheduleTable = ({ onGymAdded, refreshTrigger, gyms, events}) => {
     const [newGym, setNewGym] = useState('');
     const [currentPage, setCurrentPage] = useState(0);
     const daysPerPage = 7;
@@ -117,4 +117,4 @@ const EventTable = ({ onGymAdded, refreshTrigger, gyms, events}) => {
     );
 };
 
-export default EventTable;
+export default ScheduleTable;
