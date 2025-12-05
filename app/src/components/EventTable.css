@@ -45,6 +45,12 @@
   font-weight: 500;
 }
 
+.past-date {
+  background-color: #f0f0f0 !important;
+  color: #999;
+  opacity: 0.6;
+}
+
 .event-table-container {
   overflow-x: auto;
 }

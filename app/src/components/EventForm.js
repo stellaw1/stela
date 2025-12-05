@@ -1,6 +1,7 @@
 // src/components/EventForm.js
 import React, { useState } from 'react';
 import { addEvent, deleteEvent } from '../services/api';
+import { isPastDate } from '../utils/dateHelpers';
 import './EventForm.css';
 
 const EventForm = ({ onEventAdded, gyms, events}) => {
@@ -18,10 +19,6 @@ const EventForm = ({ onEventAdded, gyms, events}) => {
 
         await addEvent(newEvent);
 
-        setName('');
-        setGym('');
-        setDay('');
-
         if (onEventAdded) {
             onEventAdded();
         }
@@ -34,16 +31,15 @@ const EventForm = ({ onEventAdded, gyms, events}) => {
 
         await deleteEvent(newEvent);
 
-        setName('');
-        setGym('');
-        setDay('');
-
         if (onEventAdded) onEventAdded();
     };
 
     if (events === null || gyms === null) {
         return <div>Loading...</div>;
     }
+
+    const availableDates = Object.keys(events).sort().filter(date => !isPastDate(date));
+    
     return (
         <form onSubmit={handleAdd} className="add-event-form">
             <div>
@@ -81,7 +77,7 @@ const EventForm = ({ onEventAdded, gyms, events}) => {
                     required
                 >
                     <option value="" disabled>Select a date</option>
-                    {Object.keys(events).sort().map((day) => {
+                    {availableDates.map((day) => {
                         const dateObj = new Date(day + "T00:00:00-08:00");
                         const weekday = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
                         const month = dateObj.toLocaleDateString('en-US', { month: 'short' });
