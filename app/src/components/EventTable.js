@@ -1,6 +1,7 @@
 // src/components/EventTable.js
 import React, { useState, useEffect } from 'react';
 import { addGym } from '../services/api';
+import { isPastDate } from '../utils/dateHelpers';
 import './EventTable.css';
 
 const EventTable = ({ onGymAdded, refreshTrigger, gyms, events}) => {
@@ -54,8 +55,9 @@ const EventTable = ({ onGymAdded, refreshTrigger, gyms, events}) => {
                             const dateStr = day.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                             // Format: 'Sunday', 'Monday', etc.
                             const weekdateStr = day.toLocaleDateString('en-US', { weekday: 'long' });
+                            const isPast = isPastDate(date);
                             return (
-                                <th key={date} className="event-table-header-cell">
+                                <th key={date} className={`event-table-header-cell ${isPast ? 'past-date' : ''}`}>
                                     <div className="event-table-header-date">{dateStr}</div>
                                     <div className="event-table-header-weekdate">{weekdateStr}</div>
                                 </th>
@@ -68,7 +70,7 @@ const EventTable = ({ onGymAdded, refreshTrigger, gyms, events}) => {
                         <tr key={gym}>
                         <td className="gym-cell">{gym}</td>
                         {visibleDates.map(date => (
-                            <td key={date}>{(events[date][gym] || []).join(", ")}</td>
+                            <td key={date} className={isPastDate(date) ? 'past-date' : ''}>{(events[date][gym] || []).join(", ")}</td>
                         ))}
                         </tr>
                     ))}
@@ -84,7 +86,7 @@ const EventTable = ({ onGymAdded, refreshTrigger, gyms, events}) => {
                             />
                         </form>
                         </td>
-                        {visibleDates.map(date => <td key={date}></td>)}
+                        {visibleDates.map(date => <td key={date} className={isPastDate(date) ? 'past-date' : ''}></td>)}
                     </tr>
                     </tbody>
                 </table>
