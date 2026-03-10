@@ -17,6 +17,13 @@ const ScheduleForm = ({ onEventAdded, gyms, events}) => {
             date
         };
 
+        // Check if event already exists
+        const eventExists = events[date] && events[date][gym] && events[date][gym].includes(name);
+        if (eventExists) {
+            alert('This event already exists');
+            return;
+        }
+
         await addEvent(newEvent);
 
         if (onEventAdded) {
